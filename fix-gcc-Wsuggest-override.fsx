@@ -12,7 +12,8 @@ open System.Collections.Generic
 // usage: 'fsharpi fix.fsx path_to_gcc_output.txt'
 
 let isOverrideWarning (s : string) =
-    s.Contains("can be marked override [-Wsuggest-override]")
+    s.Contains("can be marked override [-Wsuggest-override]") || 
+    s.Contains("overrides a destructor but is not marked 'override' [-Winconsistent-missing-destructor-override]")
 
 type Fix = {
     file : string
