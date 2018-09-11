@@ -28,19 +28,18 @@ let fullLineWantsIfdef (line:string) =
     else
         false
 
+
+let visitFile (filename:string) =
+    printfn "visiting %s" filename
+    let newLinesOfFile =  File.ReadAllLines(filename) |> Seq.filter (fun l -> not (fullLineWantsIfdef l))
+    use out = new StreamWriter(filename)
+    newLinesOfFile |> Seq.iter (fun l -> out.WriteLine(l))
+
+let visitDir (dir:string) =
+    let cppFiles = Directory.EnumerateFiles(dir, "*.cpp", SearchOption.AllDirectories)
+    let hFiles = Directory.EnumerateFiles(dir, "*.h", SearchOption.AllDirectories)
+    cppFiles |> Seq.iter visitFile
+    hFiles |> Seq.iter visitFile
+
 let () =
-    let mutable inIfdef = false
-
-    readStdin |> Seq.iter (fun x ->
-        let nowWants = fullLineWantsIfdef x
-
-        if (not inIfdef) && nowWants then
-            printfn "#ifndef TB_USE_PCH"
-            inIfdef <- true
-
-        if inIfdef && (not nowWants) then
-            printfn "#endif"
-            inIfdef <- false
-
-        printfn "%s" x
-    )
+    visitDir "/Users/ericwa/dev/TrenchBroomAlt/common"
