@@ -1,9 +1,19 @@
 #!/bin/bash
 
-d=$(basename "$PWD")
+#used with:
+# git checkout -b vecmath
+# git filter-branch --tree-filter ~/dev/scripts/vecmath-migration.sh --prune-empty vecmath
 
-if [ "$d" != "TrenchBroom" ]; then
-    echo "only run this as a git filter in a TrenchBroom git checkout, it will delete files"
+#to get rid of empty merge commits:
+# git rebase --root HEAD 
+
+# to graft repos:
+# git replace --graft 2538c7a6f83b1611e3b4e2a225bc554f0e921557 vecmath_temp
+#                     ^ oldest commit in the "new" history,    ^ newest commit in the "old" history
+
+# safety check
+if [ "$PWD" != "/home/ericwa/TrenchBroom/.git-rewrite/t" ]; then
+    echo "only run this as a git filter in a TrenchBroom git checkout, it will delete files. pwd is $PWD"
     exit
 fi
 
